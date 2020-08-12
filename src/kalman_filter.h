@@ -1,6 +1,6 @@
 #ifndef KALMAN_FILTER_H_
 #define KALMAN_FILTER_H_
-
+#define PI 3.141592
 #include "Eigen/Dense"
 
 class KalmanFilter {
@@ -44,7 +44,7 @@ class KalmanFilter {
    * Updates the state by using Extended Kalman Filter equations
    * @param z The measurement at k+1
    */
-  void UpdateEKF(const Eigen::VectorXd &z,  Eigen::MatrixXd &H_,  Eigen::MatrixXd &R_)  ;
+  void UpdateEKF(const Eigen::VectorXd &z,  Eigen::MatrixXd &Hj_,  Eigen::MatrixXd &R_)  ;
 
   // state vector
   Eigen::VectorXd x_;

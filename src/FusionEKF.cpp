@@ -109,8 +109,6 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack)
   }
   else
   {
-    cout << "R_laser_ = " << R_laser_ << endl;
-    cout << "ekf_.R_ = " << ekf_.R_ << endl;
     MatrixXd(2, 2);
     ekf_.R_ =  MatrixXd(2, 2);
     ekf_.R_= R_laser_;

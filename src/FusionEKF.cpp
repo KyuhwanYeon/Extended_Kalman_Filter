@@ -58,7 +58,8 @@ FusionEKF::~FusionEKF() {}
 
 void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack)
 {
-
+  float dt = (measurement_pack.timestamp_ - previous_timestamp_) / 1000000.0;
+  previous_timestamp_ = measurement_pack.timestamp_;
   if (!is_initialized_)
   {
     ekf_.x_ = VectorXd(4);
@@ -77,8 +78,6 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack)
           measurement_pack.raw_measurements_[1],
           0,
           0;
-
-      previous_timestamp_ = measurement_pack.timestamp_;
     }
 
     // done initializing, no need to predict or update
@@ -87,10 +86,7 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack)
     return;
   }
 
-  printf("cur timestamp: %llu\n", measurement_pack.timestamp_ / 1000000);
-  float dt = (measurement_pack.timestamp_ - previous_timestamp_) / 1000000.0;
-  printf("dt: %f\n", dt);
-  previous_timestamp_ = measurement_pack.timestamp_;
+
   float dt_2 = dt * dt;
   float dt_3 = dt_2 * dt;
   float dt_4 = dt_3 * dt;

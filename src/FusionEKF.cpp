@@ -32,7 +32,9 @@ FusionEKF::FusionEKF()
   R_radar_ << 0.09, 0, 0,
       0, 0.0009, 0,
       0, 0, 0.09;
-
+  // H matrix for laser
+  H_laser_ << 1, 0, 0, 0,
+      0, 1, 0, 0;
   // process model init
   ekf_.x_ = VectorXd(4);
   // state covariance matrix P
@@ -48,7 +50,6 @@ FusionEKF::FusionEKF()
       0, 0, 1, 0,
       0, 0, 0, 1;
   // set the acceleration noise components
-
 }
 
 /**
@@ -86,7 +87,6 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack)
     return;
   }
 
-
   float dt_2 = dt * dt;
   float dt_3 = dt_2 * dt;
   float dt_4 = dt_3 * dt;
@@ -110,8 +110,8 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack)
   else
   {
     MatrixXd(2, 2);
-    ekf_.R_ =  MatrixXd(2, 2);
-    ekf_.R_= R_laser_;
+    ekf_.R_ = MatrixXd(2, 2);
+    ekf_.R_ = R_laser_;
     ekf_.H_ = MatrixXd(2, 4);
     ekf_.H_ = H_laser_;
     ekf_.Update(measurement_pack.raw_measurements_);

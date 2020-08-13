@@ -54,15 +54,27 @@ void KalmanFilter::UpdateEKF(const Eigen::VectorXd &z, Eigen::MatrixXd &Hj_, Eig
   double vx = x_(2);
   double vy = x_(3);
   double rho = sqrt(px * px + py * py);
-  rho = (rho < 0.01) ? 0.01 : rho;  // to avoid divide by 0
+  rho = (rho < 0.01) ? 0.01 : rho; // to avoid divide by 0
   double phi = atan2(py, px);
-  phi = (phi > PI) ? PI : phi;
-  phi = (phi < -PI) ? -PI : phi;
   double rho_dot = (px * vx + py * vy) / rho;
   VectorXd z_pred(3);
-  z_pred << rho, phi, rho_dot;  // z_pred = h(x)
+  z_pred << rho, phi, rho_dot; // z_pred = h(x)
 
   VectorXd y = z - z_pred;
+
+  // In this project, z(1) is sometimes over the pi. Actually in the real world, rho cannot be over the pi.
+  // Below saturation code is just dedicated for this project. 
+  while (y(1) > M_PI)
+  {
+    printf("z: %lf, z_pred: %lf\n", z(1), z_pred(1));
+    y(1) -= 2. * M_PI;
+  }
+  while (y(1) < -M_PI)
+  {
+    printf("z: %lf, z_pred: %lf\n", z(1), z_pred(1));
+    y(1) += 2. * M_PI;
+  }
+  
   MatrixXd Ht = Hj_.transpose();
   MatrixXd S = Hj_ * P_ * Ht + R_;
   MatrixXd Si = S.inverse();
